@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchData } from '../API/api';
+import Spinners from './Spinner';
 
 function SplitExpenses() {
     const [totalAmount, setTotalAmount] = useState('');
@@ -10,7 +11,7 @@ function SplitExpenses() {
     const [splitValues, setSplitValues] = useState([0, 0, 0, 0, 0, 0, 0]);
     const [submittedValues, setSubmittedValues] = useState(null);
     const [validationError, setValidationError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abinav", "Hari", "Mithun"];
 
@@ -46,26 +47,8 @@ function SplitExpenses() {
         } else {
             setValidationError(null)
         }
-
-        // Create the submitted values array
-        const submittedData = [
-            description,
-            totalAmount,
-            ...splitValues,
-            'H', // 'H' for "paid by H" as per your example
-            expenseType,
-            new Date()
-        ];
-
-        // Set the submitted values in state for further use or display
-        setSubmittedValues(submittedData);
-
-        // You can also log the submitted values to the console
-        console.log("Submitted Values:", submittedData);
         let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=H' + '&type=' + expenseType;
-        // ["vishnu", "karthik", "harshith", "nirmal", "abinav", "hari", "mithun"].forEach((person, i) => {
-        //     payload = payload + '&' + person + '=' + splitValues[i]
-        // })
+        setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
                 setLoading(false);
@@ -163,6 +146,7 @@ function SplitExpenses() {
                     <pre>{JSON.stringify(submittedValues, null, 2)}</pre>
                 </div>
             )}
+            {loading && <Spinners />}
         </div>
     );
 }

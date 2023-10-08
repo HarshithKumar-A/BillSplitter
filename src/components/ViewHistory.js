@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../API/api';
+import Spinners from './Spinner';
 
 function ViewHistory() {
     const [openCardIndex, setOpenCardIndex] = useState(-1);
@@ -39,36 +40,39 @@ function ViewHistory() {
                 <h2>Expense History</h2>
                 <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
             </div>
-            {expenseHistory.map((item, index) => (
-                <div className="card mb-3" key={index}>
-                    <div className="card-body">
-                        <h6 className="card-title mb-0">{item.description}</h6>
-                        <p className="card-text text-right m-0" style={{ fontSize: '8px', opacity: '0.7' }}>
-                            {formatTime(item.time)}
-                        </p>
-                        <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
-                            ₹{item.expense.vishnu}
-                        </p>
-                        <p className="card-text text-center" style={{ color: 'gray' }}>Total: ₹{item.total}</p>
-                        {index === openCardIndex && (
-                            <div>
-                                {Object.entries(item.expense).map(([key, value]) => (
-                                    <p key={key} className="card-text">
-                                        {key}: ₹{value}
-                                    </p>
-                                ))}
+            {
+                loading ? <Spinners /> :
+                    expenseHistory.map((item, index) => (
+                        <div className="card mb-3" key={index}>
+                            <div className="card-body">
+                                <h6 className="card-title mb-0">{item.description}</h6>
+                                <p className="card-text text-right m-0" style={{ fontSize: '8px', opacity: '0.7' }}>
+                                    {formatTime(item.time)}
+                                </p>
+                                <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
+                                    ₹{item.expense.vishnu}
+                                </p>
+                                <p className="card-text text-center" style={{ color: 'gray' }}>Total: ₹{item.total}</p>
+                                {index === openCardIndex && (
+                                    <div>
+                                        {Object.entries(item.expense).map(([key, value]) => (
+                                            <p key={key} className="card-text">
+                                                {key}: ₹{value}
+                                            </p>
+                                        ))}
+                                    </div>
+                                )}
+                                <p
+                                    className="card-text text-center show-more-link"
+                                    onClick={() => toggleCard(index)}
+                                    style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                                >
+                                    {openCardIndex === index ? 'Show Less' : 'Show More'}
+                                </p>
                             </div>
-                        )}
-                        <p
-                            className="card-text text-center show-more-link"
-                            onClick={() => toggleCard(index)}
-                            style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                        >
-                            {openCardIndex === index ? 'Show Less' : 'Show More'}
-                        </p>
-                    </div>
-                </div>
-            ))}
+                        </div>
+                    ))
+            }
         </div>
     );
 }
