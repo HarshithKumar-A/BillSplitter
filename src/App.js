@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Routes
+
+import Home from './components/Home';
+import NewSplit from './components/NewSplit';
+import ViewHistory from './components/ViewHistory';
+import Summary from './components/Summary';
+import Login from './components/Login';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      {/* Use Routes as the parent element */}
+      <Routes>
+        <Route path="/" element={<Home />} /> {/* Use "element" prop */}
+        <Route path="/new-split" element={<NewSplit />} />
+        <Route path="/view-history" element={<ViewHistory />} />
+        <Route path="/summary" element={<Summary />} />
+        <Route path="/login" element={<Login />} />
+        {/* Add more routes if needed */}
+      </Routes>
+    </Router>
   );
 }
 
