@@ -16,7 +16,7 @@ function ViewHistory() {
         // Fetch expense history data when the component mounts
         fetchData('getHistory', false)
             .then((data) => {
-                setExpenseHistory(data.result);
+                setExpenseHistory(data.result.reverse());
                 setLoading(false);
             })
             .catch((error) => {
@@ -34,8 +34,12 @@ function ViewHistory() {
         return formattedTime;
     };
 
+    function returnName(id) {
+        return { A: 'Abu Ser', HP: 'Hari', H: 'Harshith', K: 'Karthik', 'V': 'Boss', 'M': 'Mithun', N: 'Nirmal' }[id]
+    }
+
     return (
-        <div className="container mt-5">
+        <div className="container mt-3">
             <div className='d-flex justify-content-between'>
                 <h2>Expense History</h2>
                 <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
@@ -47,11 +51,16 @@ function ViewHistory() {
                             <div className="card-body">
                                 <h6 className="card-title mb-0">{item.description}</h6>
                                 <p className="card-text text-right m-0" style={{ fontSize: '8px', opacity: '0.7' }}>
-                                    {formatTime(item.time)}
+                                    {formatTime(item.time)} by <b>{returnName(item.paidby)}</b>
                                 </p>
-                                <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
-                                    ₹{item.expense.vishnu}
-                                </p>
+                                {item.paidby === "V" ?
+                                    <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'green', fontWeight: 'bold' }}>
+                                        ₹{item.total - item.expense.vishnu}
+                                    </p>
+                                    : <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
+                                        ₹{item.expense.vishnu}
+                                    </p>
+                                }
                                 <p className="card-text text-center" style={{ color: 'gray' }}>Total: ₹{item.total}</p>
                                 {index === openCardIndex && (
                                     <div>

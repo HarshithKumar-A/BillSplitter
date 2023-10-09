@@ -25,7 +25,7 @@ function SummaryPage() {
         return { A: 'Abu Ser', HP: 'Hari', H: 'Harshith', K: 'Karthik', 'V': 'Boss', 'M': 'Mithun', N: 'Nirmal' }[id]
     }
     return (
-        <div className="container mt-5">
+        <div className="container mt-3">
             <div className="d-flex justify-content-between">
                 <h2>Summary</h2>
                 <Link to="/" className="btn btn-primary mb-3">

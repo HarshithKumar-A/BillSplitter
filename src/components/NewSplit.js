@@ -61,13 +61,13 @@ function SplitExpenses() {
     };
 
     return (
-        <div className="container mt-5 p-0">
+        <div className="container mt-3 p-2">
             <div className='d-flex justify-content-between'>
                 <h2>Split Expenses</h2>
                 <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
             </div>
             <form>
-                <div className="row">
+                <div className="">
                     <div className="col-md-6 mb-3 p-0 pe-1">
                         <div className="form-group mt-2">
                             <label htmlFor="totalAmount">Total Amount (INR)</label>
@@ -143,7 +143,6 @@ function SplitExpenses() {
             {submittedValues && (
                 <div className="mt-3">
                     <h3>Submitted Values:</h3>
-                    <pre>{JSON.stringify(submittedValues, null, 2)}</pre>
                 </div>
             )}
             {loading && <Spinners />}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Home() {
   return (
-    <div className="container mt-5">
+    <div className="container mt-3">
       <div className="row">
         <div className="col-md-4">
           <div className="card">
