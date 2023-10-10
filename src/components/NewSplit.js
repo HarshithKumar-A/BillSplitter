@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchData } from '../API/api';
 import Spinners from './Spinner';
+import { useNavigate } from "react-router-dom";
+import { getUserId } from '../API/localStorage';
+
 
 function SplitExpenses() {
+    const navigate = useNavigate();
     const [totalAmount, setTotalAmount] = useState('');
     const [description, setDescription] = useState('');
     const [expenseType, setExpenseType] = useState('');
-    const [splitAmount, setSplitAmount] = useState('');
     const [splitValues, setSplitValues] = useState([0, 0, 0, 0, 0, 0, 0]);
-    const [submittedValues, setSubmittedValues] = useState(null);
+    const [dirty, setDirty] = useState([false, false, false, false, false, false, false]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [id, setId] = useState(getUserId());
+
+    useEffect(() => {
+        setId(getUserId())
+    }, []);
 
     const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abinav", "Hari", "Mithun"];
 
@@ -19,7 +27,6 @@ function SplitExpenses() {
         const amount = parseFloat(e.target.value);
         setTotalAmount(amount);
         const amountPerPerson = amount !== 0 ? (amount / persons.length).toFixed(2) : 0;
-        setSplitAmount(amountPerPerson);
         setSplitValues(persons.map(() => (amount !== 0 ? parseFloat(amountPerPerson) : 0)));
     };
 
@@ -33,12 +40,40 @@ function SplitExpenses() {
     };
 
     const handleSplitValueChange = (index, e) => {
+        if (e.target.value > totalAmount) {
+            return;
+        }
         const updatedSplitValues = [...splitValues];
-        updatedSplitValues[index] = parseFloat(e.target.value);
-        setSplitValues(updatedSplitValues);
+        updatedSplitValues[index] = parseFloat(e.target.value.replace(/^0+/, ''));
+
+        const updatedDirty = [...dirty];
+        updatedDirty[index] = true;
+        setDirty(updatedDirty)
+        const nonTouchedCount = updatedDirty.filter((val) => !val).length;
+        let touchTotal = 0;
+        updatedDirty.forEach((val, index) => {
+            if (val) {
+                touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
+            }
+        })
+        console.log(touchTotal, totalAmount - touchTotal, nonTouchedCount);
+        setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (totalAmount - touchTotal) / nonTouchedCount))
+        console.log(splitValues)
     };
 
     const handleSplitSubmit = () => {
+        if (!description) {
+            setValidationError('Enter Description!');
+            return;
+        }
+        if (splitValues.some((val) => val < 0)) {
+            setValidationError('Value Can not be -ve !');
+            return;
+        }
+        if (!expenseType) {
+            setValidationError('Select A expense type!');
+            return;
+        }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + value, 0);
         console.log(totalSplitValue.toFixed(2), totalAmount)
         if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
@@ -47,12 +82,13 @@ function SplitExpenses() {
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=H' + '&type=' + expenseType;
+        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType;
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
                 setLoading(false);
                 console.log(data);
+                navigate("/view-history");
             })
             .catch((error) => {
                 console.error('Error fetching expense history:', error);
@@ -72,7 +108,6 @@ function SplitExpenses() {
                         <div className="form-group mt-2">
                             <label htmlFor="totalAmount">Total Amount (INR)</label>
                             <input
-                                type="number"
                                 className="form-control"
                                 id="totalAmount"
                                 placeholder="Enter total amount"
@@ -120,6 +155,8 @@ function SplitExpenses() {
                                         value={splitValues[index]}
                                         onChange={(e) => handleSplitValueChange(index, e)}
                                         disabled={totalAmount <= 0}
+                                        min={0}
+                                        max={totalAmount}
                                     />
                                 </div>
                             </div>
@@ -140,11 +177,6 @@ function SplitExpenses() {
                     Split Expenses
                 </button>
             </form>
-            {submittedValues && (
-                <div className="mt-3">
-                    <h3>Submitted Values:</h3>
-                </div>
-            )}
             {loading && <Spinners />}
         </div>
     );

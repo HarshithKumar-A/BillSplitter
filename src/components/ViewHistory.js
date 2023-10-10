@@ -2,17 +2,21 @@ import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../API/api';
 import Spinners from './Spinner';
+import { getUserId, getUserName } from '../API/localStorage';
 
 function ViewHistory() {
     const [openCardIndex, setOpenCardIndex] = useState(-1);
     const [expenseHistory, setExpenseHistory] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [id, setId] = useState(getUserId());
+
 
     const toggleCard = (index) => {
         setOpenCardIndex(openCardIndex === index ? -1 : index);
     };
 
     useEffect(() => {
+        setId(getUserId())
         // Fetch expense history data when the component mounts
         fetchData('getHistory', false)
             .then((data) => {
@@ -53,12 +57,12 @@ function ViewHistory() {
                                 <p className="card-text text-right m-0" style={{ fontSize: '8px', opacity: '0.7' }}>
                                     {formatTime(item.time)} by <b>{returnName(item.paidby)}</b>
                                 </p>
-                                {item.paidby === "V" ?
+                                {item.paidby === id ?
                                     <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'green', fontWeight: 'bold' }}>
-                                        ₹{item.total - item.expense.vishnu}
+                                        ₹{item.total - item.expense[getUserName()]}
                                     </p>
                                     : <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
-                                        ₹{item.expense.vishnu}
+                                        ₹{item.expense[getUserName()]}
                                     </p>
                                 }
                                 <p className="card-text text-center" style={{ color: 'gray' }}>Total: ₹{item.total}</p>
