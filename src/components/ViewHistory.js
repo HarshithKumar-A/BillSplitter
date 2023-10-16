@@ -55,7 +55,7 @@ function ViewHistory() {
                             <div className="card-body">
                                 <h6 className="card-title mb-0">{item.description}</h6>
                                 <p className="card-text text-right m-0" style={{ fontSize: '8px', opacity: '0.7' }}>
-                                    {formatTime(item.time)} by <b>{returnName(item.paidby)}</b>
+                                      {new Date(item.time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} by <b>{returnName(item.paidby)}</b>
                                 </p>
                                 {item.paidby === id ?
                                     <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'green', fontWeight: 'bold' }}>

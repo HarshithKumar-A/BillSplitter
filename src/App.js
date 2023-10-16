@@ -6,6 +6,10 @@ import NewSplit from './components/NewSplit';
 import ViewHistory from './components/ViewHistory';
 import Summary from './components/Summary';
 import Login from './components/Login';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import ChatComponent from './components/Chat';
 
 function App() {
 
@@ -15,7 +19,56 @@ function App() {
 
   useEffect(() => {
     window.addEventListener('beforeinstallprompt', handleInstallPrompt);
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("Notification permission granted");
+        }
+      });
+    }
+    // setTimeout(() => {showNotification("hi")})
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB6c1DCp7f_f-ufTLflyWvqayFfYc4Id-I",
+      authDomain: "billsplitter-537ad.firebaseapp.com",
+      projectId: "billsplitter-537ad",
+      storageBucket: "billsplitter-537ad.appspot.com",
+      messagingSenderId: "651821715309",
+      appId: "1:651821715309:web:bea27585037af4819f1464",
+      measurementId: "G-1X6M6RPVEB"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const messaging = getMessaging();
+    getToken(messaging, { vapidKey: 'BBkht21cIywqjb8nZCW5-5DPJMEoLGMgUga9E4OzokZV1vgDX8LfutZg80wnvNM_oEdXxBRXFYFHFijACSwhWNU' }).then((currentToken) => {
+      if (currentToken) {
+        console.log(currentToken);
+        // Send the token to your server and update the UI if necessary
+        // ...
+      } else {
+        // Show permission request UI
+        console.log('No registration token available. Request permission to generate one.');
+        // ...
+      }
+    }).catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
+      // ...
+    });
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+      showNotification(payload)
+    });
   }, []);
+
+
+  function showNotification(title, options) {
+    if (Notification.permission === "granted") {
+      new Notification(title, options);
+    }
+  }
+
 
   const handleInstallPrompt = (event) => {
     setPromoteEvent(event);
@@ -61,6 +114,8 @@ function App() {
           <Route path="/view-history" element={<ViewHistory />} />
           <Route path="/summary" element={<Summary />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/chat" element={<ChatComponent />} />
+
           {/* Add more routes if needed */}
         </Routes>
       </Router>

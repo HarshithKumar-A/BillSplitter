@@ -24,7 +24,10 @@ function SplitExpenses() {
     const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abinav", "Hari", "Mithun"];
 
     const handleTotalAmountChange = (e) => {
-        const amount = parseFloat(e.target.value);
+        let amount = parseFloat(e.target.value);
+        if (isNaN(amount)) {
+            amount = 0;
+        }
         setTotalAmount(amount);
         const amountPerPerson = amount !== 0 ? (amount / persons.length).toFixed(2) : 0;
         setSplitValues(persons.map(() => (amount !== 0 ? parseFloat(amountPerPerson) : 0)));
