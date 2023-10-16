@@ -10,6 +10,8 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import ChatComponent from './components/Chat';
+import { getUserName } from './API/localStorage';
+import { fetchData } from './API/api';
 
 function App() {
 
@@ -45,8 +47,13 @@ function App() {
     getToken(messaging, { vapidKey: 'BBkht21cIywqjb8nZCW5-5DPJMEoLGMgUga9E4OzokZV1vgDX8LfutZg80wnvNM_oEdXxBRXFYFHFijACSwhWNU' }).then((currentToken) => {
       if (currentToken) {
         console.log(currentToken);
-        // Send the token to your server and update the UI if necessary
-        // ...
+        let payload = '&user=' + getUserName() + '&key=' + currentToken;
+        fetchData('writeKey', payload)
+          .then((data) => {
+          })
+          .catch((error) => {
+            console.error('Error :', error);
+          });
       } else {
         // Show permission request UI
         console.log('No registration token available. Request permission to generate one.');
