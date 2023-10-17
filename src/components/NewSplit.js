@@ -16,6 +16,8 @@ function SplitExpenses() {
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [id, setId] = useState(getUserId());
+    const [autoSplit, setAutoSPlit] = useState(true);
+
 
     useEffect(() => {
         setId(getUserId())
@@ -49,17 +51,21 @@ function SplitExpenses() {
         const updatedSplitValues = [...splitValues];
         updatedSplitValues[index] = e.target.value;
 
-        const updatedDirty = [...dirty];
-        updatedDirty[index] = true;
-        setDirty(updatedDirty)
-        const nonTouchedCount = updatedDirty.filter((val) => !val).length;
-        let touchTotal = 0;
-        updatedDirty.forEach((val, index) => {
-            if (val) {
-                touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
-            }
-        })
-        setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (totalAmount - touchTotal) / nonTouchedCount))
+        if (autoSplit) {
+            const updatedDirty = [...dirty];
+            updatedDirty[index] = true;
+            setDirty(updatedDirty)
+            const nonTouchedCount = updatedDirty.filter((val) => !val).length;
+            let touchTotal = 0;
+            updatedDirty.forEach((val, index) => {
+                if (val) {
+                    touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
+                }
+            })
+            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (totalAmount - touchTotal) / nonTouchedCount))
+        } else {
+            setSplitValues(updatedSplitValues);
+        }
     };
 
     const handleSplitSubmit = () => {
@@ -108,7 +114,7 @@ function SplitExpenses() {
             setValidationError('Select A expense type!');
             return;
         }
-        const totalSplitValue = splitValues.reduce((acc, value) => acc + value, 0);
+        const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
         if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
@@ -192,6 +198,10 @@ function SplitExpenses() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                    <div className="col-md-6 p-3">
+                        <input checked={autoSplit} type="checkbox" id="split-disble" name="vehicle3" value={autoSplit} onChange={(e) => { setAutoSPlit(!autoSplit) }} />
+                        <label className='col-sm-6 ms-2' htmlFor="split-disble">Auto splitting</label>
                     </div>
                 </div>
                 {validationError && (
