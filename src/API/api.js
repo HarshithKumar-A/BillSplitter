@@ -1,6 +1,6 @@
 // api.js
 
-const BASE_URL = 'https://script.google.com/macros/s/AKfycbwFh-0-D5QFZbP8Coyso1AsPWRd2n9tw1QKp9kIfBKYjaRAJ3GUKRiYH5uo7TNTi9zb3Q/exec';
+const BASE_URL = 'https://script.google.com/macros/s/AKfycbwoUcr673_8eMGdXHKEgi4CHizYwPuX1vUbKcIbvYGyhzku3uX0tzT2m7wnp7l4yWCU6Q/exec';
 
 export const fetchData = async (action, payload) => {
     try {

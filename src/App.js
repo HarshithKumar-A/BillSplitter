@@ -7,6 +7,9 @@ import ViewHistory from './components/ViewHistory';
 import Summary from './components/Summary';
 import Login from './components/Login';
 import ChatComponent from './components/Chat';
+import PublishSplits from './components/Unpublised';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function App() {
 
@@ -71,10 +74,11 @@ function App() {
           <Route path="/summary" element={<Summary />} />
           <Route path="/login" element={<Login />} />
           <Route path="/chat" element={<ChatComponent />} />
-
+          <Route path='/unpublished' element={<PublishSplits />} />
           {/* Add more routes if needed */}
         </Routes>
       </Router>
+      <ToastContainer />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchData } from '../API/api';
 import Spinners from './Spinner';
 import { useNavigate } from "react-router-dom";
-import { getUserId } from '../API/localStorage';
+import { getUserId, getUserName } from '../API/localStorage';
 
 
 function SplitExpenses() {
@@ -43,11 +43,11 @@ function SplitExpenses() {
     };
 
     const handleSplitValueChange = (index, e) => {
-        if (e.target.value > totalAmount) {
+        if (e.target.value > totalAmount || isNaN(Number(e.target.value))) {
             return;
         }
         const updatedSplitValues = [...splitValues];
-        updatedSplitValues[index] = parseFloat(e.target.value.replace(/^0+/, ''));
+        updatedSplitValues[index] = e.target.value;
 
         const updatedDirty = [...dirty];
         updatedDirty[index] = true;
@@ -59,9 +59,7 @@ function SplitExpenses() {
                 touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
             }
         })
-        console.log(touchTotal, totalAmount - touchTotal, nonTouchedCount);
         setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (totalAmount - touchTotal) / nonTouchedCount))
-        console.log(splitValues)
     };
 
     const handleSplitSubmit = () => {
@@ -77,27 +75,58 @@ function SplitExpenses() {
             setValidationError('Select A expense type!');
             return;
         }
-        const totalSplitValue = splitValues.reduce((acc, value) => acc + value, 0);
-        console.log(totalSplitValue.toFixed(2), totalAmount)
+        const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
         if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType;
+        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType + '&by=' + getUserName();
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
                 setLoading(false);
-                console.log(data);
                 navigate("/view-history");
             })
             .catch((error) => {
                 console.error('Error fetching expense history:', error);
-                setLoading(false);
+                setValidationError('Error in publishing the Split. Save it as a draft for publishing later!')
             });
     };
+
+    function makeDraft() {
+        if (!description) {
+            setValidationError('Enter Description!');
+            return;
+        }
+        if (splitValues.some((val) => val < 0)) {
+            setValidationError('Value Can not be -ve !');
+            return;
+        }
+        if (!expenseType) {
+            setValidationError('Select A expense type!');
+            return;
+        }
+        const totalSplitValue = splitValues.reduce((acc, value) => acc + value, 0);
+        if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
+            setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
+            return;
+        } else {
+            setValidationError(null)
+        }
+        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType + '&by=' + getUserName();
+        const newEntry = {
+            payload: payload,
+            description: description,
+            totalAmount: totalAmount,
+            paid: getUserName(),
+            id: new Date().getTime()
+        }
+        let currenntlist = localStorage.getItem('v1:unpublished') ? [...JSON.parse(localStorage.getItem('v1:unpublished')), newEntry] : [newEntry];
+        localStorage.setItem('v1:unpublished', JSON.stringify(currenntlist))
+        navigate("/unpublished");
+    }
 
     return (
         <div className="container mt-3 p-2">
@@ -151,7 +180,6 @@ function SplitExpenses() {
                                 <label className='col-sm-2 col-form-label' htmlFor={`split-${person}`}>{person}</label>
                                 <div className="col-sm-10">
                                     <input
-                                        type="number"
                                         className="form-control"
                                         id={`split-${person}`}
                                         placeholder={`Enter ${person}'s share (INR)`}
@@ -173,11 +201,19 @@ function SplitExpenses() {
                 )}
                 <button
                     type="button"
-                    className="col-12 btn btn-primary mt-3"
+                    className="col-5 btn btn-primary mt-3 me-5"
                     onClick={handleSplitSubmit}
                     disabled={totalAmount <= 0}
                 >
-                    Split Expenses
+                    Publish Split
+                </button>
+                <button
+                    type="button"
+                    className="col-5 btn btn-primary mt-3"
+                    onClick={makeDraft}
+                    disabled={totalAmount <= 0}
+                >
+                    Save as draft
                 </button>
             </form>
             {loading && <Spinners />}

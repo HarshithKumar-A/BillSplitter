@@ -4,8 +4,10 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { fetchData } from '../API/api';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
   useEffect(() => {
     const firebaseConfig = {
       apiKey: "AIzaSyB6c1DCp7f_f-ufTLflyWvqayFfYc4Id-I",
@@ -53,9 +55,20 @@ function Home() {
 
   function showNotification(title, options) {
     if (Notification.permission === "granted") {
-      new Notification(title, options);
+      const notification = new Notification(title, options);
+
+      notification.addEventListener("click", () => {
+        if (title.startsWith("New Split:")) {
+          navigate('/view-history');
+        } else {
+          navigate('/chat');
+        }
+        notification.close();
+      });
     }
   }
+
+
   return (
     <div className="container mt-3">
       <div className="row">
@@ -95,6 +108,16 @@ function Home() {
               <h5 className="card-title">discuss</h5>
               <p className="card-text">View a discuss of your team.</p>
               <Link to="/chat" className="btn btn-primary">Go to discuss</Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-4 pt-2">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Unpublished Splits</h5>
+              <p className="card-text">Publish Unpublished Split</p>
+              <Link to="/unpublished" className="btn btn-primary">Go to Unpublished Splits</Link>
             </div>
           </div>
         </div>
