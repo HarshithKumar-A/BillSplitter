@@ -19,55 +19,55 @@ function App() {
   const [promtEvent, setPromoteEvent] = useState(false);
 
 
-  useEffect(() => {
-    window.addEventListener('beforeinstallprompt', handleInstallPrompt);
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Notification permission granted");
-        }
-      });
-    }
-    // setTimeout(() => {showNotification("hi")})
+  // useEffect(() => {
+  //   window.addEventListener('beforeinstallprompt', handleInstallPrompt);
+  //   if (Notification.permission !== "granted") {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === "granted") {
+  //         console.log("Notification permission granted");
+  //       }
+  //     });
+  //   }
+  //   // setTimeout(() => {showNotification("hi")})
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB6c1DCp7f_f-ufTLflyWvqayFfYc4Id-I",
-      authDomain: "billsplitter-537ad.firebaseapp.com",
-      projectId: "billsplitter-537ad",
-      storageBucket: "billsplitter-537ad.appspot.com",
-      messagingSenderId: "651821715309",
-      appId: "1:651821715309:web:bea27585037af4819f1464",
-      measurementId: "G-1X6M6RPVEB"
-    };
+  //   const firebaseConfig = {
+  //     apiKey: "AIzaSyB6c1DCp7f_f-ufTLflyWvqayFfYc4Id-I",
+  //     authDomain: "billsplitter-537ad.firebaseapp.com",
+  //     projectId: "billsplitter-537ad",
+  //     storageBucket: "billsplitter-537ad.appspot.com",
+  //     messagingSenderId: "651821715309",
+  //     appId: "1:651821715309:web:bea27585037af4819f1464",
+  //     measurementId: "G-1X6M6RPVEB"
+  //   };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const messaging = getMessaging();
-    getToken(messaging, { vapidKey: 'BBkht21cIywqjb8nZCW5-5DPJMEoLGMgUga9E4OzokZV1vgDX8LfutZg80wnvNM_oEdXxBRXFYFHFijACSwhWNU' }).then((currentToken) => {
-      if (currentToken) {
-        console.log(currentToken);
-        let payload = '&user=' + getUserName() + '&key=' + currentToken;
-        fetchData('writeKey', payload)
-          .then((data) => {
-          })
-          .catch((error) => {
-            console.error('Error :', error);
-          });
-      } else {
-        // Show permission request UI
-        console.log('No registration token available. Request permission to generate one.');
-        // ...
-      }
-    }).catch((err) => {
-      console.log('An error occurred while retrieving token. ', err);
-      // ...
-    });
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      showNotification(payload)
-    });
-  }, []);
+  //   // Initialize Firebase
+  //   const app = initializeApp(firebaseConfig);
+  //   const analytics = getAnalytics(app);
+  //   const messaging = getMessaging();
+  //   getToken(messaging, { vapidKey: 'BBkht21cIywqjb8nZCW5-5DPJMEoLGMgUga9E4OzokZV1vgDX8LfutZg80wnvNM_oEdXxBRXFYFHFijACSwhWNU' }).then((currentToken) => {
+  //     if (currentToken) {
+  //       console.log(currentToken);
+  //       let payload = '&user=' + getUserName() + '&key=' + currentToken;
+  //       fetchData('writeKey', payload)
+  //         .then((data) => {
+  //         })
+  //         .catch((error) => {
+  //           console.error('Error :', error);
+  //         });
+  //     } else {
+  //       // Show permission request UI
+  //       console.log('No registration token available. Request permission to generate one.');
+  //       // ...
+  //     }
+  //   }).catch((err) => {
+  //     console.log('An error occurred while retrieving token. ', err);
+  //     // ...
+  //   });
+  //   onMessage(messaging, (payload) => {
+  //     console.log('Message received. ', payload);
+  //     showNotification(payload)
+  //   });
+  // }, []);
 
 
   function showNotification(title, options) {
@@ -96,13 +96,13 @@ function App() {
   };
 
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (document.getElementsByTagName('vercel-live-feedback').length) {
-        document.getElementsByTagName('vercel-live-feedback')[0].style.display = 'none'
-      }
-    }, 2000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (document.getElementsByTagName('vercel-live-feedback').length) {
+  //       document.getElementsByTagName('vercel-live-feedback')[0].style.display = 'none'
+  //     }
+  //   }, 2000)
+  // }, [])
 
   return (
     <>
