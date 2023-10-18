@@ -17,6 +17,8 @@ function SplitExpenses() {
     const [loading, setLoading] = useState(false);
     const [id, setId] = useState(getUserId());
     const [autoSplit, setAutoSPlit] = useState(true);
+    const [ignoreTotalError, setIgnoreTotalError] = useState(false);
+    const [totalError, setTotalError] = useState(false);
 
 
     useEffect(() => {
@@ -82,7 +84,8 @@ function SplitExpenses() {
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
-        if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
+        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) && !ignoreTotalError) {
+            setTotalError(true);
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
@@ -115,7 +118,8 @@ function SplitExpenses() {
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
-        if (totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) {
+        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) && !ignoreTotalError) {
+            setTotalError(true);
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
@@ -203,6 +207,13 @@ function SplitExpenses() {
                         <input checked={autoSplit} type="checkbox" id="split-disble" name="vehicle3" value={autoSplit} onChange={(e) => { setAutoSPlit(!autoSplit) }} />
                         <label className='col-sm-6 ms-2' htmlFor="split-disble">Auto splitting</label>
                     </div>
+                    {
+                        totalError &&
+                    <div className="col-md-6 p-3">
+                        <input checked={ignoreTotalError} type="checkbox" id="error-disble" name="vehicle3" value={ignoreTotalError} onChange={(e) => { setIgnoreTotalError(!ignoreTotalError) }} />
+                        <label className='col-sm-6 ms-2' htmlFor="error-disble">Ignore total error <span style={{color: 'red', fontWeight: 'bold', fontSize:'18px', marginLeft: '2px'}}>!</span></label> 
+                    </div>
+                    }
                 </div>
                 {validationError && (
                     <div className="alert alert-danger mt-3" role="alert">

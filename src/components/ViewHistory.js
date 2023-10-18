@@ -69,6 +69,11 @@ function ViewHistory() {
             });
     };
 
+    const getTotalAmountToGet = ((expense, user) => {
+        expense[user] = 0;
+        return (Object.keys(expense).reduce((acc, value) => acc + Number(expense[value]), 0)).toFixed(2)
+    });
+
     return (
         <div className="container mt-3">
             <div className='d-flex justify-content-between'>
@@ -96,7 +101,7 @@ function ViewHistory() {
                         </div>
                         {item.paidby === id ?
                             <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'green', fontWeight: 'bold' }}>
-                                ₹{item.total - item.expense[getUserName()]}
+                                ₹{getTotalAmountToGet({ ...item.expense }, getUserName())}
                             </p>
                             : <p className="card-text text-center mb-0" style={{ fontSize: '26px', color: 'red', fontWeight: 'bold' }}>
                                 ₹{item.expense[getUserName()]}
