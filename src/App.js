@@ -8,6 +8,7 @@ import Summary from './components/Summary';
 import Login from './components/Login';
 import ChatComponent from './components/Chat';
 import PublishSplits from './components/Unpublised';
+import AuthGuard from './AuthGuard';
 import { ToastContainer, toast } from 'react-toastify';
 
 
@@ -66,16 +67,14 @@ function App() {
         </div>
       )}
       <Router>
-        {/* Use Routes as the parent element */}
         <Routes>
-          <Route path="/" element={<Home />} /> {/* Use "element" prop */}
-          <Route path="/new-split" element={<NewSplit />} />
-          <Route path="/view-history" element={<ViewHistory />} />
-          <Route path="/summary" element={<Summary />} />
+          <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
+          <Route path="/new-split" element={<AuthGuard><NewSplit /></AuthGuard>} />
+          <Route path="/view-history" element={<AuthGuard><ViewHistory /></AuthGuard>} />
+          <Route path="/summary" element={<AuthGuard><Summary /></AuthGuard>} />
           <Route path="/login" element={<Login />} />
-          <Route path="/chat" element={<ChatComponent />} />
-          <Route path='/unpublished' element={<PublishSplits />} />
-          {/* Add more routes if needed */}
+          <Route path="/chat" element={<AuthGuard><ChatComponent /></AuthGuard>} />
+          <Route path="/unpublished" element={<AuthGuard><PublishSplits /></AuthGuard>} />
         </Routes>
       </Router>
       <ToastContainer />

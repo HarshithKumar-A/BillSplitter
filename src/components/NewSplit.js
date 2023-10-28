@@ -15,7 +15,7 @@ function SplitExpenses() {
     const [dirty, setDirty] = useState([false, false, false, false, false, false, false]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [id, setId] = useState(getUserId());
+    const [id, setId] = useState();
     const [autoSplit, setAutoSPlit] = useState(true);
     const [ignoreTotalError, setIgnoreTotalError] = useState(false);
     const [totalError, setTotalError] = useState(false);
