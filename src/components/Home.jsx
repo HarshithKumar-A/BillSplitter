@@ -71,6 +71,7 @@ function Home() {
 
   return (
     <div className="container mt-3">
+      AUTH GUARD ENBLED
       <div className="row">
         <div className="col-md-4">
           <div className="card">
