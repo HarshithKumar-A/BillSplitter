@@ -15,7 +15,7 @@ function SplitExpenses() {
     const [dirty, setDirty] = useState([false, false, false, false, false, false, false]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [id, setId] = useState();
+    const [userId, setId] = useState();
     const [autoSplit, setAutoSPlit] = useState(true);
     const [ignoreTotalError, setIgnoreTotalError] = useState(false);
     const [totalError, setTotalError] = useState(false);
@@ -44,6 +44,10 @@ function SplitExpenses() {
 
     const handleExpenseTypeChange = (e) => {
         setExpenseType(e.target.value);
+    };
+
+    const handlePaidByChange = (e) => {
+        setId(e.target.value);
     };
 
     const handleSplitValueChange = (index, e) => {
@@ -91,7 +95,7 @@ function SplitExpenses() {
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType + '&by=' + getUserName();
+        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
@@ -125,7 +129,7 @@ function SplitExpenses() {
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + id + '&type=' + expenseType + '&by=' + getUserName();
+        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         const newEntry = {
             payload: payload,
             description: description,
@@ -202,6 +206,29 @@ function SplitExpenses() {
                                 </div>
                             </div>
                         ))}
+                        <div className="row mt-2">
+                            <label className='col-sm-2 col-form-label' htmlFor={`split-by`}>paid:</label>
+                            <div className="col-sm-10">
+                                <select
+                                    className="form-control"
+                                    id="split-by"
+                                    value={userId}
+                                    onChange={handlePaidByChange}
+                                >
+                                    {[
+                                        { id: 'A', name: 'Abhinav' },
+                                        { id: 'HP', name: 'Hari' },
+                                        { id: 'H', name: 'Harshith' },
+                                        { id: 'K', name: 'Karthik' },
+                                        { id: 'V', name: 'Vishnu' },
+                                        { id: 'M', name: 'Mithun' },
+                                        { id: 'N', name: 'Nirmal' },
+                                        { id: 'Their OWN', name: 'Their Own' }
+                                    ].map((obj) => <option key={obj.id} value={obj.id}>{obj.name}</option>)
+                                    }
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div className="col-md-6 p-3">
                         <input checked={autoSplit} type="checkbox" id="split-disble" name="vehicle3" value={autoSplit} onChange={(e) => { setAutoSPlit(!autoSplit) }} />
@@ -209,10 +236,10 @@ function SplitExpenses() {
                     </div>
                     {
                         totalError &&
-                    <div className="col-md-6 p-3">
-                        <input checked={ignoreTotalError} type="checkbox" id="error-disble" name="vehicle3" value={ignoreTotalError} onChange={(e) => { setIgnoreTotalError(!ignoreTotalError) }} />
-                        <label className='col-sm-6 ms-2' htmlFor="error-disble">Ignore total error <span style={{color: 'red', fontWeight: 'bold', fontSize:'18px', marginLeft: '2px'}}>!</span></label> 
-                    </div>
+                        <div className="col-md-6 p-3">
+                            <input checked={ignoreTotalError} type="checkbox" id="error-disble" name="vehicle3" value={ignoreTotalError} onChange={(e) => { setIgnoreTotalError(!ignoreTotalError) }} />
+                            <label className='col-sm-6 ms-2' htmlFor="error-disble">Ignore total error <span style={{ color: 'red', fontWeight: 'bold', fontSize: '18px', marginLeft: '2px' }}>!</span></label>
+                        </div>
                     }
                 </div>
                 {validationError && (
