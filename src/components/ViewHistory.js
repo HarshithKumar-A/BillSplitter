@@ -95,13 +95,13 @@ function ViewHistory() {
                 fontWeight: 'bolder',
             }}>
                 <div className='card-body d-flex justify-content-around'>
-                    <span className='d-flex flex-column' style={{ color: 'red', alignItems: 'center' }}>₹{expenseSummary.totalOwnExpense}
+                    <span className='d-flex flex-column' style={{ color: 'red', alignItems: 'center' }}>₹{expenseSummary.totalOwnExpense.toFixed(2)}
                         <div style={{
                             fontSize: '8px',
                             opacity: '0.5',
                             color: 'black'
                         }}>( total expense of {getUserName()} )</div>
-                    </span>| <span className='d-flex flex-column' style={{ color: 'lime', alignItems: 'center' }}> ₹{expenseSummary.totalPaid}
+                    </span>| <span className='d-flex flex-column' style={{ color: 'lime', alignItems: 'center' }}> ₹{expenseSummary.totalPaid.toFixed(2)}
                         <div style={{
                             fontSize: '8px',
                             opacity: '0.5',
