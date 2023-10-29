@@ -28,13 +28,29 @@ function SplitExpenses() {
     const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abinav", "Hari", "Mithun"];
 
     const handleTotalAmountChange = (e) => {
-        let amount = parseFloat(e.target.value);
+        let amount = (e.target.value);
         if (isNaN(amount)) {
             amount = 0;
         }
-        setTotalAmount(amount);
+        setTotalAmount(e.target.value);
         const amountPerPerson = amount !== 0 ? (amount / persons.length).toFixed(2) : 0;
         setSplitValues(persons.map(() => (amount !== 0 ? parseFloat(amountPerPerson) : 0)));
+    };
+
+    const handleKeyDown = (e) => {
+        // // Allow only numeric input and the Enter key
+        console.log(e.key);
+        if (
+            (e.key === 'Enter') ||
+            (e.key >= '0' && e.key <= '9') ||
+            e.key === 'Backspace' ||
+            e.key === 'Delete' ||
+            e.key === 'ArrowLeft' ||
+            e.key === 'ArrowRight' || (e.key === '.' && !totalAmount.includes('.'))
+        ) {
+            return;
+        }
+        e.preventDefault();
     };
 
 
@@ -51,7 +67,7 @@ function SplitExpenses() {
     };
 
     const handleSplitValueChange = (index, e) => {
-        if (e.target.value > totalAmount || isNaN(Number(e.target.value))) {
+        if (e.target.value > Number(totalAmount) || isNaN(Number(e.target.value))) {
             return;
         }
         const updatedSplitValues = [...splitValues];
@@ -68,7 +84,7 @@ function SplitExpenses() {
                     touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
                 }
             })
-            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (totalAmount - touchTotal) / nonTouchedCount))
+            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (Number(totalAmount) - touchTotal) / nonTouchedCount))
         } else {
             setSplitValues(updatedSplitValues);
         }
@@ -88,14 +104,14 @@ function SplitExpenses() {
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
-        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) && !ignoreTotalError) {
+        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== Number(totalAmount)) && !ignoreTotalError) {
             setTotalError(true);
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
+        let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
@@ -122,18 +138,18 @@ function SplitExpenses() {
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
-        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== totalAmount) && !ignoreTotalError) {
+        if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== Number(totalAmount)) && !ignoreTotalError) {
             setTotalError(true);
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
             setValidationError(null)
         }
-        let payload = '&description=' + description + '&total=' + totalAmount + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
+        let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         const newEntry = {
             payload: payload,
             description: description,
-            totalAmount: totalAmount,
+            totalAmount: Number(totalAmount),
             paid: getUserName(),
             id: new Date().getTime()
         }
@@ -159,6 +175,7 @@ function SplitExpenses() {
                                 placeholder="Enter total amount"
                                 value={totalAmount}
                                 onChange={handleTotalAmountChange}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
                         <div className="form-group mt-2">
@@ -199,9 +216,9 @@ function SplitExpenses() {
                                         placeholder={`Enter ${person}'s share (INR)`}
                                         value={splitValues[index]}
                                         onChange={(e) => handleSplitValueChange(index, e)}
-                                        disabled={totalAmount <= 0}
+                                        disabled={Number(totalAmount) <= 0}
                                         min={0}
-                                        max={totalAmount}
+                                        max={Number(totalAmount)}
                                     />
                                 </div>
                             </div>
@@ -251,7 +268,7 @@ function SplitExpenses() {
                     type="button"
                     className="col-5 btn btn-primary mt-3 me-5"
                     onClick={handleSplitSubmit}
-                    disabled={totalAmount <= 0}
+                    disabled={Number(totalAmount) <= 0}
                 >
                     Publish Split
                 </button>
@@ -259,7 +276,7 @@ function SplitExpenses() {
                     type="button"
                     className="col-5 btn btn-primary mt-3"
                     onClick={makeDraft}
-                    disabled={totalAmount <= 0}
+                    disabled={Number(totalAmount) <= 0}
                 >
                     Save as draft
                 </button>
