@@ -12,6 +12,7 @@ function ViewHistory() {
     const [expenseHistory, setExpenseHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [id, setId] = useState(getUserId());
+    const [expenseSummary, setExpecnce] = useState({ totalOwnExpense: 0, totalPaid: 0 })
 
 
     const toggleCard = (index) => {
@@ -25,6 +26,12 @@ function ViewHistory() {
             .then((data) => {
                 setExpenseHistory(data.result.reverse());
                 setLoading(false);
+                const userName = getUserName();
+                const totalOwnExpense = data.result.reduce((value, item) => value + Number(item.expense[userName]), 0);
+                const totalSpent = data.result.reduce((value, item) => {
+                    return value + (item.paidby === id ? Number(item.total) : (item.paidby === 'Their OWN' ? Number(item.expense[userName]) : 0));
+                }, 0);
+                setExpecnce({ totalOwnExpense: totalOwnExpense, totalPaid: totalSpent });
             })
             .catch((error) => {
                 toast.error('Error fetching expense history');
@@ -80,6 +87,30 @@ function ViewHistory() {
                 <h2>Expense History</h2>
                 <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
             </div>
+
+            <div className="card mb-3" style={{
+                border: '1px solid blue',
+                boxShadow: 'rgb(0 64 255) 0px 1px 2px 0px, rgba(27, 255, 0, 0.15) 0px 2px 6px 2px',
+                fontSize: '22px',
+                fontWeight: 'bolder',
+            }}>
+                <div className='card-body d-flex justify-content-around'>
+                    <span className='d-flex flex-column' style={{ color: 'red', alignItems: 'center' }}>₹{expenseSummary.totalOwnExpense}
+                        <div style={{
+                            fontSize: '8px',
+                            opacity: '0.5',
+                            color: 'black'
+                        }}>( total expense of {getUserName()} )</div>
+                    </span>| <span className='d-flex flex-column' style={{ color: 'lime', alignItems: 'center' }}> ₹{expenseSummary.totalPaid}
+                        <div style={{
+                            fontSize: '8px',
+                            opacity: '0.5',
+                            color: 'black'
+                        }}>( spent by {getUserName()} )</div>
+                    </span>
+                </div>
+            </div>
+
             {expenseHistory.map((item, index) => (
                 <div className="card mb-3" key={index}>
                     <div className="card-body">
