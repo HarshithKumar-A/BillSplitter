@@ -25,7 +25,7 @@ function SplitExpenses() {
         setId(getUserId())
     }, []);
 
-    const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abinav", "Hari", "Mithun"];
+    const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abhinav", "Hari", "Mithun"];
 
     const handleTotalAmountChange = (e) => {
         let amount = (e.target.value);

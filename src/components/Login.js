@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const userList = [
@@ -6,7 +6,7 @@ const userList = [
     { id: 'K', name: 'Karthik' },
     { id: 'H', name: 'Harshith' },
     { id: 'N', name: 'Nirmal' },
-    { id: 'A', name: 'Abinav' },
+    { id: 'A', name: 'Abhinav' },
     { id: 'HP', name: 'Hariprasad' },
     { id: 'M', name: 'Mithun' },
 ];
@@ -15,6 +15,13 @@ const userList = [
 function Login() {
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState('');
+
+    useEffect(() => {
+        const isUserAuthenticated = localStorage.getItem('v1:userInfo');
+        if (isUserAuthenticated) {
+            navigate('/');
+        }
+    }, [])
 
     const handleLogin = () => {
         console.log(selectedUser);

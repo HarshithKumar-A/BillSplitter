@@ -121,6 +121,16 @@ function Home() {
             </div>
           </div>
         </div>
+
+        <div className="col-md-4 pt-2">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Switch User</h5>
+              <p className="card-text"></p>
+              <button onClick={() => { localStorage.removeItem('v1:userInfo'); navigate('/login') }} className="btn btn-primary">Go to Login</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
