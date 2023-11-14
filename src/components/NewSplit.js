@@ -199,6 +199,7 @@ function SplitExpenses() {
                                 <option value="">Select expense type</option>
                                 <option value="Food">Food</option>
                                 <option value="Travel">Travel</option>
+                                <option value="Stay">Stay</option>
                                 <option value="Entry Pass">Entry Pass</option>
                                 <option value="Others">Others</option>
                             </select>

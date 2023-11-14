@@ -71,7 +71,7 @@ const ChatComponent = () => {
   }, []);
 
   return (
-    <div className="container" style={{ background: "lightgray", height: "100vh", padding: "20px", overflow: 'auto' }}>
+    <div className="container" style={{ background: "lightgray", height: "100vh", padding: "14px", overflow: 'auto' }}>
       <div className="row" style={{ display: "flex", justifyContent: "flex-end", position: 'sticky', top: '-20px', zIndex: 10, backgroundColor: 'lightgray', padding: '10px' }}>
       <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
       </div>
@@ -89,7 +89,7 @@ const ChatComponent = () => {
           }}
         > <Spinners /></div>
       )}
-      <div className="row" style={{ padding: "20px", display: "flex", flexDirection: "column" }}>
+      <div className="row" style={{ padding: "8px", display: "flex", flexDirection: "column" }}>
         <div className="chat-messages" ref={chatContainerRef} style={{ flex: 1, overflowY: "auto", marginBottom: "10px", minHeight: "calc(100vh - 200px)" }}>
           {messages.map((message, index) => (
             <div key={index} className="card mb-2" style={{ backgroundColor: message.By === JSON.parse(localStorage.getItem('v1:userInfo')).name ? "lightblue" : "lightgreen", alignSelf: message.By === JSON.parse(localStorage.getItem('v1:userInfo')).name ? "flex-end" : "flex-start" }}>
@@ -97,7 +97,7 @@ const ChatComponent = () => {
                 <p style={{ fontSize: "10px", fontWeight: "bold", color: "gray" }}>
                   {JSON.parse(localStorage.getItem('v1:userInfo')).name === message.By ? 'You' : message.By}
                 </p>
-                <p style={{ fontSize: "14px" }}>{message.Message}</p>
+                <p style={{ fontSize: "14px" }} dangerouslySetInnerHTML={{__html: message.Message}}></p>
                 <p style={{ fontSize: "8px", fontWeight: "bold", opacity: "0.8", textAlign: "right" }}>
                 {new Date(message.Time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
                 </p>
