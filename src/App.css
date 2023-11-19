@@ -60,3 +60,15 @@ body {
   overflow: hidden;
   max-width: 50vw;
 }
+
+.home-container .card-1 {
+  height: calc(25vh - 60px ) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-1 svg {
+  height: 10vh;
+  width: 15vw;
+}
