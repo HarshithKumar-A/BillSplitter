@@ -17,16 +17,21 @@ const Updates = () => {
     useEffect(() => {
         const findNextDeparture = () => {
             const now = new Date();
+
+            const upcomingArrival = schedule.find(
+                (event, index) => event.arrival && new Date(event.arrival) > now && new Date(schedule[index - 1].departure) < now
+            );
             const upcomingDeparture = schedule.find(
                 (event) => event.departure && new Date(event.departure) > now
             );
 
             if (upcomingDeparture) {
-                const timeDifference = new Date(upcomingDeparture.departure) - now;
+                const timeDifference = upcomingArrival ? new Date(upcomingArrival.arrival) - now : new Date(upcomingDeparture.departure) - now;
                 setNextUpdate({
-                    place: upcomingDeparture.place,
-                    arrival: upcomingDeparture.arrival,
+                    place: upcomingArrival ? upcomingArrival.place : upcomingDeparture.place,
+                    arrival: upcomingArrival?.arrival,
                     timer: timeDifference,
+                    inTrain: !!upcomingArrival,
                 });
             } else {
                 setNextUpdate(null);
@@ -53,7 +58,7 @@ const Updates = () => {
         <div className="card p-3 text-center shadow">
             {nextUpdate ? (
                 <p className="fade-in">
-                    Next train from {nextUpdate.place} within {formatTime(nextUpdate.timer)}
+                    {nextUpdate.inTrain ? `Will reach ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}`:`Next train from ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}`}
                 </p>
             ) : (
                 <p>No upcoming updates</p>
