@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { getUserName } from '../API/localStorage';
+import { fetchData } from '../API/api';
 
 const Updates = () => {
     const [nextUpdate, setNextUpdate] = useState(null);
+    const [update, setUpdate] = useState(null);
 
     const schedule = [
         { place: 'CLT', arrival: null, departure: '2023-12-06T17:10:00' },
@@ -15,6 +18,13 @@ const Updates = () => {
     ];
 
     useEffect(() => {
+        fetchData('getUpdate', false)
+            .then((data) => {
+                setUpdate(data?.result?.message)
+            })
+            .catch((error) => {
+                console.error('Error fetching expense history:', error);
+            });
         const findNextDeparture = () => {
             const now = new Date();
 
@@ -56,13 +66,15 @@ const Updates = () => {
 
     return (
         <div className="card p-3 text-center shadow">
+            <div>Hi <b className='bold'>{getUserName()}</b>,</div>
             {nextUpdate ? (
                 <p className="fade-in">
-                    {nextUpdate.inTrain ? `Will reach ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}`:`Next train from ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}`}
+                    {nextUpdate.inTrain ? `Will reach ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}` : `Next train from ${nextUpdate.place} within ${formatTime(nextUpdate.timer)}`}
                 </p>
             ) : (
                 <p>No upcoming updates</p>
             )}
+            {update && <p style={{ fontSize: "14px" }} className='card p-1' dangerouslySetInnerHTML={{ __html: update }}></p>}
         </div>
     );
 };

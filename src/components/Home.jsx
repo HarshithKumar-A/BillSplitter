@@ -27,14 +27,14 @@ function Home() {
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const messaging = getMessaging();
-    if (!localStorage.getItem('v1:currentToken')) {
+    if (!localStorage.getItem('v2:currentToken')) {
       getToken(messaging, { vapidKey: 'BBkht21cIywqjb8nZCW5-5DPJMEoLGMgUga9E4OzokZV1vgDX8LfutZg80wnvNM_oEdXxBRXFYFHFijACSwhWNU' }).then((currentToken) => {
         if (currentToken && JSON.parse(localStorage.getItem('v1:userInfo')).name) {
           console.log(currentToken);
           let payload = '&user=' + JSON.parse(localStorage.getItem('v1:userInfo')).name + '&key=' + currentToken;
           fetchData('writeKey', payload)
             .then((data) => {
-              localStorage.setItem('v1:currentToken', currentToken)
+              localStorage.setItem('v2:currentToken', currentToken)
             })
             .catch((error) => {
               console.error('Error :', error);
