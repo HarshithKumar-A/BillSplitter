@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchData } from '../API/api';
 import Spinners from './Spinner';
 import { useNavigate } from "react-router-dom";
-import { getUserId, getUserName } from '../API/localStorage';
+import { getTrip, getUserId, getUserName } from '../API/localStorage';
 
 
 function SplitExpenses() {
@@ -16,7 +16,7 @@ function SplitExpenses() {
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userId, setId] = useState();
-    const [autoSplit, setAutoSPlit] = useState(true);
+    const [autoSplit, setAutoSPlit] = useState(getTrip() !== 'Vrindavan');
     const [ignoreTotalError, setIgnoreTotalError] = useState(false);
     const [totalError, setTotalError] = useState(false);
 

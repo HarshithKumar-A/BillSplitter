@@ -15,6 +15,8 @@ const userList = [
 function Login() {
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState('');
+    const [selectedTrp, setSelectedTrp] = useState('');
+
 
     useEffect(() => {
         const isUserAuthenticated = localStorage.getItem('v1:userInfo');
@@ -27,6 +29,7 @@ function Login() {
         console.log(selectedUser);
         if (selectedUser) {
             localStorage.setItem('v1:userInfo', JSON.stringify({ name: userList[selectedUser].name, id: userList[selectedUser].id }));
+            localStorage.setItem('v1:tripInfo', JSON.stringify({ id: selectedTrp }));
             navigate('/');
         } else {
             alert('Please select a user before logging in.');
@@ -47,6 +50,21 @@ function Login() {
                         {userList.map((user, index) => (
                             <option key={user.id} value={index}>
                                 {user.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <h2>Trip</h2>
+                <div className="form-group col-10">
+                    <select
+                        className="form-control my-3"
+                        value={selectedTrp}
+                        onChange={(e) => setSelectedTrp(e.target.value)}
+                    >
+                        <option value="">Select a trip</option>
+                        {['4.0', 'Vrindavan'].map((trip, index) => (
+                            <option key={trip} value={trip}>
+                                {trip}
                             </option>
                         ))}
                     </select>
