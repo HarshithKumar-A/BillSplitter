@@ -16,6 +16,7 @@ export function getUserName() {
 
 export function getTrip() {
     if (JSON.parse(localStorage.getItem('v1:tripInfo'))?.id) {
+        console.log(JSON.parse(localStorage.getItem('v1:tripInfo')).id)
         return JSON.parse(localStorage.getItem('v1:tripInfo')).id;
     }
     else return 0

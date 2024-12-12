@@ -4,32 +4,31 @@ import { fetchData } from '../API/api';
 import Spinners from './Spinner';
 import { useNavigate } from "react-router-dom";
 import { getTrip, getUserId, getUserName } from '../API/localStorage';
-import NewSplitVrindavan from './NewSplit copy';
 
 
-function SplitExpenses() {
+function NewSplitVrindavan() {
     const navigate = useNavigate();
     const [totalAmount, setTotalAmount] = useState('');
     const [description, setDescription] = useState('');
     const [expenseType, setExpenseType] = useState('');
-    const [splitValues, setSplitValues] = useState([0, 0, 0, 0, 0, 0, 0]);
-    const [dirty, setDirty] = useState([false, false, false, false, false, false, false]);
+    const [splitValues, setSplitValues] = useState([0, 0]);
+    const [dirty, setDirty] = useState([false, false]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userId, setId] = useState();
-    const [autoSplit, setAutoSPlit] = useState(getTrip() !== 'Vrindavan');
+    const [autoSplit, setAutoSPlit] = useState(true);
     const [ignoreTotalError, setIgnoreTotalError] = useState(false);
     const [totalError, setTotalError] = useState(false);
 
-
     useEffect(() => {
-        setId(getUserId())
+        setId(getUserId());
     }, []);
 
-    const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abhinav", "Hari", "Mithun"];
+    // Determine the persons based on the trip
+    const persons = ["Harshith", "Mithun"];
 
     const handleTotalAmountChange = (e) => {
-        let amount = (e.target.value);
+        let amount = e.target.value;
         if (isNaN(amount)) {
             amount = 0;
         }
@@ -39,8 +38,6 @@ function SplitExpenses() {
     };
 
     const handleKeyDown = (e) => {
-        // // Allow only numeric input and the Enter key
-        console.log(e.key);
         if (
             (e.key === 'Enter') ||
             (e.key >= '0' && e.key <= '9') ||
@@ -53,7 +50,6 @@ function SplitExpenses() {
         }
         e.preventDefault();
     };
-
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
@@ -77,7 +73,7 @@ function SplitExpenses() {
         if (autoSplit) {
             const updatedDirty = [...dirty];
             updatedDirty[index] = true;
-            setDirty(updatedDirty)
+            setDirty(updatedDirty);
             const nonTouchedCount = updatedDirty.filter((val) => !val).length;
             let touchTotal = 0;
             updatedDirty.forEach((val, index) => {
@@ -85,7 +81,7 @@ function SplitExpenses() {
                     touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
                 }
             })
-            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (Number(totalAmount) - touchTotal) / nonTouchedCount))
+            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (Number(totalAmount) - touchTotal) / nonTouchedCount));
         } else {
             setSplitValues(updatedSplitValues);
         }
@@ -97,22 +93,22 @@ function SplitExpenses() {
             return;
         }
         if (splitValues.some((val) => val < 0)) {
-            setValidationError('Value Can not be -ve !');
+            setValidationError('Value Cannot be negative!');
             return;
         }
         if (!expenseType) {
-            setValidationError('Select A expense type!');
+            setValidationError('Select an expense type!');
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
         if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== Number(totalAmount)) && !ignoreTotalError) {
             setTotalError(true);
-            setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
+            setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered (₹${totalAmount}) .`);
             return;
         } else {
-            setValidationError(null)
+            setValidationError(null);
         }
-        let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
+        let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify([0,0,splitValues[0],0,0,0,splitValues[1]]) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
@@ -121,30 +117,30 @@ function SplitExpenses() {
             })
             .catch((error) => {
                 console.error('Error fetching expense history:', error);
-                setValidationError('Error in publishing the Split. Save it as a draft for publishing later!')
+                setValidationError('Error in publishing the Split. Save it as a draft for publishing later!');
             });
     };
 
-    function makeDraft() {
+    const makeDraft = () => {
         if (!description) {
             setValidationError('Enter Description!');
             return;
         }
         if (splitValues.some((val) => val < 0)) {
-            setValidationError('Value Can not be -ve !');
+            setValidationError('Value Cannot be negative!');
             return;
         }
         if (!expenseType) {
-            setValidationError('Select A expense type!');
+            setValidationError('Select an expense type!');
             return;
         }
         const totalSplitValue = splitValues.reduce((acc, value) => acc + Number(value), 0);
         if ((totalAmount === '' || Number(totalSplitValue.toFixed(2)) !== Number(totalAmount)) && !ignoreTotalError) {
             setTotalError(true);
-            setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
+            setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered (₹${totalAmount}) .`);
             return;
         } else {
-            setValidationError(null)
+            setValidationError(null);
         }
         let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         const newEntry = {
@@ -153,16 +149,16 @@ function SplitExpenses() {
             totalAmount: Number(totalAmount),
             paid: getUserName(),
             id: new Date().getTime()
-        }
+        };
         let currenntlist = localStorage.getItem('v1:unpublished') ? [...JSON.parse(localStorage.getItem('v1:unpublished')), newEntry] : [newEntry];
-        localStorage.setItem('v1:unpublished', JSON.stringify(currenntlist))
+        localStorage.setItem('v1:unpublished', JSON.stringify(currenntlist));
         navigate("/unpublished");
-    }
+    };
 
-    return getTrip() === 'Vrindavan' ? <NewSplitVrindavan /> : (
+    return (
         <div className="container mt-3 p-2">
             <div className='d-flex justify-content-between'>
-                <h2>Split Expenses</h2>
+                <h2>Split Expenses(Vrindavan Special)</h2>
                 <Link to="/" className="btn btn-primary mb-3">Back to Home</Link>
             </div>
             <form>
@@ -226,7 +222,7 @@ function SplitExpenses() {
                             </div>
                         ))}
                         <div className="row mt-2">
-                            <label className='col-sm-2 col-form-label' htmlFor={`split-by`}>paid:</label>
+                            <label className='col-sm-2 col-form-label' htmlFor={`split-by`}>Paid by:</label>
                             <div className="col-sm-10">
                                 <select
                                     className="form-control"
@@ -235,16 +231,9 @@ function SplitExpenses() {
                                     onChange={handlePaidByChange}
                                 >
                                     {[
-                                        { id: 'A', name: 'Abhinav' },
-                                        { id: 'HP', name: 'Hari' },
                                         { id: 'H', name: 'Harshith' },
-                                        { id: 'K', name: 'Karthik' },
-                                        { id: 'V', name: 'Vishnu' },
-                                        { id: 'M', name: 'Mithun' },
-                                        { id: 'N', name: 'Nirmal' },
-                                        { id: 'Their OWN', name: 'Their Own' }
-                                    ].map((obj) => <option key={obj.id} value={obj.id}>{obj.name}</option>)
-                                    }
+                                        { id: 'M', name: 'Mithun' }
+                                    ].map((obj) => <option key={obj.id} value={obj.id}>{obj.name}</option>)}
                                 </select>
                             </div>
                         </div>
@@ -288,4 +277,4 @@ function SplitExpenses() {
     );
 }
 
-export default SplitExpenses;
+export default NewSplitVrindavan;
