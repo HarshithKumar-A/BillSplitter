@@ -4,7 +4,7 @@ import { getTrip } from "./localStorage";
 const BASE_URL = [
     'https://script.google.com/macros/s/AKfycbxcUwY54G5RraEfAcM5OedToG8xREMIkf84-KGkAjo-UB_S57l0KSX8djVT2GIyooFYRQ/exec',
     'https://script.google.com/macros/s/AKfycbxRs84pGXVe5h-TKqf4XnNA_WJt9lx5z6cPQuOV6wEkRHv13E6Y5PILf2CQ6gMrCqU7nQ/exec',
-    'https://script.google.com/macros/s/AKfycbw4mGmTsiLkUYyXMfB2U8PwBdr6iYnKsST_al5cX0wle4uGx9hXCtBTwReSo3yqsctNrw/exec',
+    'https://script.google.com/macros/s/AKfycbwrZLMQkV9qmI3sCPq11HR_MSrnWRu8U2NYdO2m3yXeSLYoO_GdvHf5AKj7LQMZW55esg/exec',
 ]
 
 export const fetchData = async (action, payload) => {
