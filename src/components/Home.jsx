@@ -63,7 +63,7 @@ function Home() {
     { title: 'View Summary', link: '/summary', icon: faChartPie },
     { title: 'Discuss', link: '/chat', icon: faComments },
     { title: 'Unpublished Splits', link: '/unpublished', icon: faList },
-    { title: 'Switch User', action: () => { localStorage.removeItem('v1:userInfo'); navigate('/login') }, icon: faUser },
+    { title: 'Switch User / Trip', action: () => { localStorage.removeItem('v1:userInfo'); navigate('/login') }, icon: faUser },
   ];
 
   // Function to show notifications

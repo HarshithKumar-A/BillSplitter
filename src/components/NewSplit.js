@@ -125,6 +125,7 @@ function SplitExpenses() {
             })
             .catch((error) => {
                 console.error('Error fetching expense history:', error);
+                setLoading(false);
                 setValidationError('Error in publishing the Split. Save it as a draft for publishing later!');
             });
     };

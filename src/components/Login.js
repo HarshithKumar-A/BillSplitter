@@ -45,7 +45,7 @@ function Login() {
     return (
         <div className='d-flex align-items-center' style={{ height: '100vh' }}>
             <div className="container d-flex align-items-center flex-column">
-                <h2>Trip</h2>{selectedUser}
+                <h2>Trip</h2>
                 <div className="form-group col-10">
                     <select
                         className="form-control my-3"
