@@ -7,10 +7,10 @@ function Login() {
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedTrp, setSelectedTrp] = useState('');
-    const userList = selectedTrp === 'Vrindavan'? [
+    const userList = selectedTrp === 'Vrindavan' ? [
         { id: 'H', name: 'Harshith' },
         { id: 'M', name: 'Mithun' },
-    ]: [
+    ] : [
         { id: 'V', name: 'Vishnu' },
         { id: 'K', name: 'Karthik' },
         { id: 'H', name: 'Harshith' },
@@ -18,6 +18,9 @@ function Login() {
         { id: 'A', name: 'Abhinav' },
         { id: 'HP', name: 'Hariprasad' },
         { id: 'M', name: 'Mithun' },
+        { id: 'AB', name: 'Benny' },
+        { id: 'AK', name: 'Akshaya' },
+        { id: 'Y', name: 'Yadu' },
     ];
 
 
@@ -47,10 +50,10 @@ function Login() {
                     <select
                         className="form-control my-3"
                         value={selectedTrp}
-                        onChange={(e) => {setSelectedTrp(e.target.value); setSelectedUser('')}}
+                        onChange={(e) => { setSelectedTrp(e.target.value); setSelectedUser('') }}
                     >
                         <option value="">Select a trip</option>
-                        {['4.0', 'Vrindavan'].map((trip, index) => (
+                        {['4.0', 'Vrindavan', 'Go goa'].map((trip, index) => (
                             <option key={trip} value={trip}>
                                 {trip}
                             </option>

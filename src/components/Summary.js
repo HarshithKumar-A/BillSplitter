@@ -53,6 +53,9 @@ function SummaryPage() {
             V: 'Boss',
             M: 'Mithun',
             N: 'Nirmal',
+            AB: "Benny",
+            AK: "Akshaya",
+            Y: "Yadu",
         }[id];
     }
 

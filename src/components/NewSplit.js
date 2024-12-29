@@ -6,27 +6,34 @@ import { useNavigate } from "react-router-dom";
 import { getTrip, getUserId, getUserName } from '../API/localStorage';
 import NewSplitVrindavan from './NewSplit copy';
 
-
 function SplitExpenses() {
     const navigate = useNavigate();
     const [totalAmount, setTotalAmount] = useState('');
     const [description, setDescription] = useState('');
     const [expenseType, setExpenseType] = useState('');
-    const [splitValues, setSplitValues] = useState([0, 0, 0, 0, 0, 0, 0]);
-    const [dirty, setDirty] = useState([false, false, false, false, false, false, false]);
+    const [splitValues, setSplitValues] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [persons, setPersons] = useState([
+        { name: "Vishnu", checked: true },
+        { name: "Karthik", checked: true },
+        { name: "Harshith", checked: true },
+        { name: "Nirmal", checked: false },
+        { name: "Abhinav", checked: true },
+        { name: "Hari", checked: true },
+        { name: "Mithun", checked: true },
+        { name: "Benny", checked: true },
+        { name: "Akshaya", checked: true },
+        { name: "Yadu", checked: true }
+    ]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [userId, setId] = useState();
-    const [autoSplit, setAutoSPlit] = useState(getTrip() !== 'Vrindavan');
+    const [autoSplit, setAutoSplit] = useState(getTrip() !== 'Vrindavan');
     const [ignoreTotalError, setIgnoreTotalError] = useState(false);
     const [totalError, setTotalError] = useState(false);
-
 
     useEffect(() => {
         setId(getUserId())
     }, []);
-
-    const persons = ["Vishnu", "Karthik", "Harshith", "Nirmal", "Abhinav", "Hari", "Mithun"];
 
     const handleTotalAmountChange = (e) => {
         let amount = (e.target.value);
@@ -34,13 +41,14 @@ function SplitExpenses() {
             amount = 0;
         }
         setTotalAmount(e.target.value);
-        const amountPerPerson = amount !== 0 ? (amount / persons.length).toFixed(2) : 0;
-        setSplitValues(persons.map(() => (amount !== 0 ? parseFloat(amountPerPerson) : 0)));
+        if (autoSplit) {
+            const selectedPersons = persons.filter(person => person.checked);
+            const amountPerPerson = amount !== 0 ? (amount / selectedPersons.length).toFixed(2) : 0;
+            setSplitValues(persons.map(person => person.checked ? parseFloat(amountPerPerson) : 0));
+        }
     };
 
     const handleKeyDown = (e) => {
-        // // Allow only numeric input and the Enter key
-        console.log(e.key);
         if (
             (e.key === 'Enter') ||
             (e.key >= '0' && e.key <= '9') ||
@@ -53,7 +61,6 @@ function SplitExpenses() {
         }
         e.preventDefault();
     };
-
 
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
@@ -73,21 +80,18 @@ function SplitExpenses() {
         }
         const updatedSplitValues = [...splitValues];
         updatedSplitValues[index] = e.target.value;
+        setSplitValues(updatedSplitValues);
+    };
+
+    const handleCheckboxChange = (index) => {
+        const updatedPersons = [...persons];
+        updatedPersons[index].checked = !updatedPersons[index].checked;
+        setPersons(updatedPersons);
 
         if (autoSplit) {
-            const updatedDirty = [...dirty];
-            updatedDirty[index] = true;
-            setDirty(updatedDirty)
-            const nonTouchedCount = updatedDirty.filter((val) => !val).length;
-            let touchTotal = 0;
-            updatedDirty.forEach((val, index) => {
-                if (val) {
-                    touchTotal += Number(updatedSplitValues[index] ? updatedSplitValues[index] : 0);
-                }
-            })
-            setSplitValues(updatedDirty.map((value, index) => value ? updatedSplitValues[index] : (Number(totalAmount) - touchTotal) / nonTouchedCount))
-        } else {
-            setSplitValues(updatedSplitValues);
+            const selectedPersons = updatedPersons.filter(person => person.checked);
+            const amountPerPerson = totalAmount !== 0 ? (totalAmount / selectedPersons.length).toFixed(2) : 0;
+            setSplitValues(updatedPersons.map(person => person.checked ? parseFloat(amountPerPerson) : 0));
         }
     };
 
@@ -110,7 +114,7 @@ function SplitExpenses() {
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
-            setValidationError(null)
+            setValidationError(null);
         }
         let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         setLoading(true);
@@ -121,7 +125,7 @@ function SplitExpenses() {
             })
             .catch((error) => {
                 console.error('Error fetching expense history:', error);
-                setValidationError('Error in publishing the Split. Save it as a draft for publishing later!')
+                setValidationError('Error in publishing the Split. Save it as a draft for publishing later!');
             });
     };
 
@@ -144,7 +148,7 @@ function SplitExpenses() {
             setValidationError(`Total split amount (₹${Number(totalSplitValue.toFixed(2))}) must match the total amount entered(₹${totalAmount}) .`);
             return;
         } else {
-            setValidationError(null)
+            setValidationError(null);
         }
         let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
         const newEntry = {
@@ -153,9 +157,9 @@ function SplitExpenses() {
             totalAmount: Number(totalAmount),
             paid: getUserName(),
             id: new Date().getTime()
-        }
+        };
         let currenntlist = localStorage.getItem('v1:unpublished') ? [...JSON.parse(localStorage.getItem('v1:unpublished')), newEntry] : [newEntry];
-        localStorage.setItem('v1:unpublished', JSON.stringify(currenntlist))
+        localStorage.setItem('v1:unpublished', JSON.stringify(currenntlist));
         navigate("/unpublished");
     }
 
@@ -167,7 +171,7 @@ function SplitExpenses() {
             </div>
             <form>
                 <div className="">
-                    <div className="col-md-6 mb-3 p-0 pe-1">
+                    <div className=" mb-3 p-0 pe-1">
                         <div className="form-group mt-2">
                             <label htmlFor="totalAmount">Total Amount (INR)</label>
                             <input
@@ -177,6 +181,7 @@ function SplitExpenses() {
                                 value={totalAmount}
                                 onChange={handleTotalAmountChange}
                                 onKeyDown={handleKeyDown}
+                                type='number'
                             />
                         </div>
                         <div className="form-group mt-2">
@@ -206,19 +211,26 @@ function SplitExpenses() {
                             </select>
                         </div>
                     </div>
-                    <div className="col-md-6 card p-3">
+                    <div className=" card p-3">
                         <h4 className="mb-3">Split Among Persons:</h4>
                         {persons.map((person, index) => (
                             <div className="row mt-2" key={index}>
-                                <label className='col-sm-2 col-form-label' htmlFor={`split-${person}`}>{person}</label>
-                                <div className="col-sm-10">
+                                <div className="col-sm-4">
+                                    <input
+                                        type="checkbox"
+                                        checked={person.checked}
+                                        onChange={() => handleCheckboxChange(index)}
+                                    />
+                                    <label className='ms-2' htmlFor={`split-${person.name}`}>{person.name}</label>
+                                </div>
+                                <div className="col-sm-8">
                                     <input
                                         className="form-control"
-                                        id={`split-${person}`}
-                                        placeholder={`Enter ${person}'s share (INR)`}
+                                        id={`split-${person.name}`}
+                                        placeholder={`Enter ${person.name}'s share (INR)`}
                                         value={splitValues[index]}
                                         onChange={(e) => handleSplitValueChange(index, e)}
-                                        disabled={Number(totalAmount) <= 0}
+                                        disabled={!person.checked || Number(totalAmount) <= 0}
                                         min={0}
                                         max={Number(totalAmount)}
                                     />
@@ -226,7 +238,7 @@ function SplitExpenses() {
                             </div>
                         ))}
                         <div className="row mt-2">
-                            <label className='col-sm-2 col-form-label' htmlFor={`split-by`}>paid:</label>
+                            <label className='col-sm-2 col-form-label' htmlFor={`split-by`}>Paid By:</label>
                             <div className="col-sm-10">
                                 <select
                                     className="form-control"
@@ -242,22 +254,24 @@ function SplitExpenses() {
                                         { id: 'V', name: 'Vishnu' },
                                         { id: 'M', name: 'Mithun' },
                                         { id: 'N', name: 'Nirmal' },
+                                        { id: 'AB', name: 'Benny' },
+                                        { id: 'AK', name: 'Akshaya' },
+                                        { id: 'Y', name: 'Yadu' },
                                         { id: 'Their OWN', name: 'Their Own' }
-                                    ].map((obj) => <option key={obj.id} value={obj.id}>{obj.name}</option>)
-                                    }
+                                    ].map((obj) => <option key={obj.id} value={obj.id}>{obj.name}</option>)}
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6 p-3">
-                        <input checked={autoSplit} type="checkbox" id="split-disble" name="vehicle3" value={autoSplit} onChange={(e) => { setAutoSPlit(!autoSplit) }} />
-                        <label className='col-sm-6 ms-2' htmlFor="split-disble">Auto splitting</label>
+                    <div className=" p-3">
+                        <input checked={autoSplit} type="checkbox" id="split-disable" name="autoSplit" value={autoSplit} onChange={(e) => { setAutoSplit(!autoSplit) }} />
+                        <label className='col-sm-6 ms-2' htmlFor="split-disable">Auto splitting</label>
                     </div>
                     {
                         totalError &&
-                        <div className="col-md-6 p-3">
-                            <input checked={ignoreTotalError} type="checkbox" id="error-disble" name="vehicle3" value={ignoreTotalError} onChange={(e) => { setIgnoreTotalError(!ignoreTotalError) }} />
-                            <label className='col-sm-6 ms-2' htmlFor="error-disble">Ignore total error <span style={{ color: 'red', fontWeight: 'bold', fontSize: '18px', marginLeft: '2px' }}>!</span></label>
+                        <div className=" p-3">
+                            <input checked={ignoreTotalError} type="checkbox" id="error-disable" name="ignoreTotalError" value={ignoreTotalError} onChange={(e) => { setIgnoreTotalError(!ignoreTotalError) }} />
+                            <label className='col-sm-6 ms-2' htmlFor="error-disable">Ignore total error <span style={{ color: 'red', fontWeight: 'bold', fontSize: '18px', marginLeft: '2px' }}>!</span></label>
                         </div>
                     }
                 </div>

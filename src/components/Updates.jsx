@@ -7,14 +7,10 @@ const Updates = () => {
     const [update, setUpdate] = useState(null);
 
     const schedule = [
-        { place: 'CLT', arrival: null, departure: '2023-12-06T17:10:00' },
-        { place: 'Mumbai', arrival: '2023-12-07T17:05:00', departure: '2023-12-07T23:25:00' },
-        { place: 'Udaipur', arrival: '2023-12-08T14:40:00', departure: '2023-12-10T06:00:00' },
-        { place: 'Ajmer', arrival: '2023-12-10T23:10:00', departure: '2023-12-11T12:20:00' },
-        { place: 'Jaisalmer', arrival: '2023-12-10T22:30:00', departure: '2023-12-13T23:15:00' },
-        { place: 'Jaipur', arrival: '2023-12-14T10:15:00', departure: '2023-12-15T17:35:00' },
-        { place: 'Delhi', arrival: '2023-12-15T22:30:00', departure: '2023-12-16T05:40:00' },
-        { place: 'CLT', arrival: '2023-12-18T03:32:00', departure: null },
+        { place: 'Mangalore', arrival: null, departure: '2024-12-30T12:05:00' },
+        { place: 'Madgon', arrival: '2024-12-30T17:00:00', departure: '2024-12-30T17:10:00' },
+        { place: 'Madgon', arrival: null, departure: '2025-01-02T01:05:00' },
+        { place: 'Mangalore', arrival: '2025-01-02T07:40:00', departure: null },
     ];
 
     useEffect(() => {

@@ -50,7 +50,11 @@ function ViewHistory() {
     };
 
     function returnName(id) {
-        return { A: 'Abu Ser', HP: 'Hari', H: 'Harshith', K: 'Karthik', 'V': 'Boss', 'M': 'Mithun', N: 'Nirmal', 'Their OWN': 'Their Own' }[id]
+        return {
+            A: 'Abu Ser', HP: 'Hari', H: 'Harshith', K: 'Karthik', 'V': 'Boss', 'M': 'Mithun', N: 'Nirmal', AB: "Benny",
+            AK: "Akshaya",
+            Y: "Yadu", 'Their OWN': 'Their Own'
+        }[id]
     }
 
     const handleDeleteSplit = (item) => {
