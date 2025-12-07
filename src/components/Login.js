@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { TRIP_INFO } from '../constants/trip-info.const.tsx';
 
 
 function Login() {
@@ -53,7 +53,7 @@ function Login() {
                         onChange={(e) => { setSelectedTrp(e.target.value); setSelectedUser('') }}
                     >
                         <option value="">Select a trip</option>
-                        {['4.0', 'Vrindavan', 'Go goa'].map((trip, index) => (
+                        {Object.keys(TRIP_INFO).map((trip, index) => (
                             <option key={trip} value={trip}>
                                 {trip}
                             </option>

@@ -1,15 +1,11 @@
 // api.js
 import { getTrip } from "./localStorage";
+import { TRIP_INFO } from "../constants/trip-info.const.tsx";
 
-const BASE_URL = [
-    'https://script.google.com/macros/s/AKfycbxcUwY54G5RraEfAcM5OedToG8xREMIkf84-KGkAjo-UB_S57l0KSX8djVT2GIyooFYRQ/exec',
-    'https://script.google.com/macros/s/AKfycbxRs84pGXVe5h-TKqf4XnNA_WJt9lx5z6cPQuOV6wEkRHv13E6Y5PILf2CQ6gMrCqU7nQ/exec',
-    'https://script.google.com/macros/s/AKfycbzXb-RnCDN-3VIONc8TIFFRRM94yqQF8hF7oX9kFB497qVFbYt1ft1qJU4bMqM_B__emA/exec',
-]
 
 export const fetchData = async (action, payload) => {
     try {
-        let url = (getTrip() === 'Vrindavan' ? BASE_URL[0] : getTrip() === 'Go goa' ? BASE_URL[2] : BASE_URL[1]) + '?action=' + action
+        let url = TRIP_INFO[getTrip()].url + '?action=' + action
         if (payload) {
             url = url + payload;
         }
