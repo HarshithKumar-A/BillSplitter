@@ -20,9 +20,6 @@ function SplitExpenses() {
         { name: "Abhinav", checked: true },
         { name: "Hari", checked: true },
         { name: "Mithun", checked: true },
-        { name: "Benny", checked: true },
-        { name: "Akshaya", checked: true },
-        { name: "Yadu", checked: true }
     ]);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -117,6 +114,7 @@ function SplitExpenses() {
             setValidationError(null);
         }
         let payload = '&description=' + description + '&total=' + Number(totalAmount) + '&split=' + JSON.stringify(splitValues) + '&paid=' + userId + '&type=' + expenseType + '&by=' + getUserName();
+        console.log(payload);
         setLoading(true);
         fetchData('writeSplit', payload)
             .then((data) => {
